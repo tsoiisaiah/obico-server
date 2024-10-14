@@ -145,10 +145,10 @@ class BaseNotificationPlugin(object):
         elif context.printer.pause_on_failure and context.is_warning:
             text += 'Printer is NOT paused.'
 
-        text += f"Print job {self.b(context.print.filename)} \n\n"
+        text += f"\n{self.b('File:')} {context.print.filename}"
 
         if link:
-            text += f"\nGo check it at: {link}"
+            text += f"\nCheck print job ({link})"
 
         return text
 
@@ -188,6 +188,6 @@ class BaseNotificationPlugin(object):
         
         text += "\n"
         
-        text += f"Print job {self.b(context.print.filename)}"
+        text += f"\n{self.b('File:')} {context.print.filename}"
         
         return text
