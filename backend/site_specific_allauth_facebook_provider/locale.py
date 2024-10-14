@@ -30,7 +30,7 @@ def _build_locale_table(filename_or_file):
     locale_map["en"]["default"] = "US"
     # Special case: Use es_ES for Spain and es_LA for everything else
     locale_map["es"]["default"] = "LA"
-    locale_map["zh"]["default"] = "CN"
+    locale_map["zh"]["default"] = "US"
     locale_map["fr"]["default"] = "FR"
     locale_map["pt"]["default"] = "PT"
 
