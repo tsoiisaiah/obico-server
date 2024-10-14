@@ -76,7 +76,7 @@ class TelegramNotificationPlugin(BaseNotificationPlugin):
         elif context.printer.pause_on_failure and context.is_warning:
             buttons = ['cancel', 'more_info']
 
-        message = f"Hi {context.user.first_name},\n{text}"
+        message = f"{text}"
 
         try:
             file_content = requests.get(context.img_url).content
@@ -101,7 +101,7 @@ class TelegramNotificationPlugin(BaseNotificationPlugin):
         if not text:
             return
 
-        message = f"Hi {context.user.first_name},\n{text}"
+        message = f"{text}"
 
         try:
             file_content = requests.get(context.img_url).content
