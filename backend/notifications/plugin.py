@@ -133,20 +133,22 @@ class BaseNotificationPlugin(object):
         return 'Obico - Failure alert!'
 
     def get_failure_alert_text(self, context: FailureAlertContext, link: Optional[str] = None, **kwargs) -> str:
-        pausing_msg = ''
-        if context.print_paused:
-            pausing_msg = 'Printer is paused.'
-        elif context.printer.pause_on_failure and context.is_warning:
-            pausing_msg = 'Printer is NOT paused.'
+        text = f"{self.b(context.printer.name)} "
 
-        text = 'Your print {} on {} {}.\n{}'.format(
-            self.b(context.print.filename),
-            self.i(context.printer.name),
-            'smells fishy' if context.is_warning else 'is probably failing',
-            pausing_msg,
-        )
+        if context.is_warning:
+            text += "Warning ⚠️\n"
+        else:
+            text += "Failure Alert 🛑\n"
+
+        if context.print_paused:
+            text += 'Printer is paused.'
+        elif context.printer.pause_on_failure and context.is_warning:
+            text += 'Printer is NOT paused.'
+
+        text += f"\n{self.b('File:')} {context.print.filename}"
+
         if link:
-            text += f"\nGo check it at: {link}"
+            text += f"\nCheck print job ({link})"
 
         return text
 
@@ -154,34 +156,38 @@ class BaseNotificationPlugin(object):
         return 'Obico - Print job notification'
 
     def get_printer_notification_text(self, context: PrinterNotificationContext) -> str:
-        text = f"Your print job {self.b(context.print.filename)} "
         notification_type = context.notification_type
         extra_context = context.extra_context
 
+        text = f"{self.b(context.printer.name)} "
+
         if notification_type == notification_types.PrintStarted:
-            text += "has started "
+            text += "Started ☀️"
         elif notification_type == notification_types.PrintDone:
-            text += "is ready "
+            text += "Completed ✅"
         elif notification_type == notification_types.PrintCancelled:
-            text += "is canceled "
+            text += "Canceled ❌"
         elif notification_type == notification_types.PrintPaused:
-            text += "is paused "
+            text += "Paused ⏸️"
         elif notification_type == notification_types.PrintResumed:
-            text += "is resumed "
+            text += "Resumed ▶️"
         elif notification_type == notification_types.FilamentChange:
-            text += "requires filament change "
+            text += "requires filament change ♻️"
         elif notification_type == notification_types.HeaterCooledDown:
-            text = (
-                f"Heater {self.b(extra_context['heater_name'])} "
+            text += (
+                f"\nHeater {self.b(extra_context['heater_name'])} "
                 f"has cooled down to {self.b(str(extra_context['heater_actual']) + '℃')} "
             )
         elif notification_type == notification_types.HeaterTargetReached:
-            text = (
-                f"Heater {self.b(extra_context['heater_name'])} "
+            text += (
+                f"\nHeater {self.b(extra_context['heater_name'])} "
                 f"has reached target temperature {self.b(str(extra_context['heater_actual']) + '℃')} "
             )
         else:
             return ''
-
-        text += f"on printer {self.i(context.printer.name)}."
+        
+        text += "\n"
+        
+        text += f"\n{self.b('File:')} {context.print.filename}"
+        
         return text
